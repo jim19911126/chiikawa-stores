@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>吉依卡哇店家地圖｜東京・京都・大阪</title>
+<style>
+  :root {
+    --pink: #f8c9d4;
+    --pink-dark: #f296a9;
+    --blue: #bfe3f0;
+    --blue-dark: #8fd0e8;
+    --cream: #fffaf3;
+    --text: #5a4a45;
+    --text-light: #8a7a75;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 14px rgba(180, 140, 150, 0.15);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: linear-gradient(180deg, #fef4f6 0%, #fdf9f2 100%);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  header {
+    text-align: center;
+    padding: 48px 20px 28px;
+  }
+
+  header h1 {
+    font-size: 2.1rem;
+    margin: 0 0 8px;
+    color: #e8899e;
+    letter-spacing: 1px;
+  }
+
+  header p {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  nav.city-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 8px 20px 32px;
+    position: sticky;
+    top: 0;
+    background: rgba(254, 244, 246, 0.9);
+    backdrop-filter: blur(6px);
+    z-index: 10;
+  }
+
+  nav.city-nav a {
+    text-decoration: none;
+    background: var(--card-bg);
+    color: var(--pink-dark);
+    border: 2px solid var(--pink);
+    padding: 8px 22px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  nav.city-nav a:hover {
+    background: var(--pink);
+    color: white;
+  }
+
+  main {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  section.city-section {
+    margin-bottom: 56px;
+    scroll-margin-top: 70px;
+  }
+
+  section.city-section h2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.6rem;
+    color: #c46b81;
+    border-bottom: 3px solid var(--pink);
+    padding-bottom: 8px;
+    margin-bottom: 24px;
+  }
+
+  section.city-section h2::before {
+    content: "📍";
+    font-size: 1.3rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+
+  .shop-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    border: 1px solid #fbe4e9;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .shop-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(180, 140, 150, 0.25);
+  }
+
+  .shop-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.08rem;
+    color: #d97a92;
+  }
+
+  .shop-card .location {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    margin-bottom: 14px;
+  }
+
+  .link-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .link-row a {
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 999px;
+    transition: opacity 0.15s ease;
+  }
+
+  .link-row a:hover {
+    opacity: 0.8;
+  }
+
+  .btn-site {
+    background: var(--blue);
+    color: #2e6a80;
+  }
+
+  .btn-map {
+    background: var(--pink);
+    color: #a4425a;
+  }
+
+  .building-card {
+    grid-column: 1 / -1;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    border: 1px solid #fbe4e9;
+  }
+
+  .building-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #f2d3da;
+  }
+
+  .building-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #d97a92;
+  }
+
+  .building-header .btn-map {
+    font-size: 0.85rem;
+    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+  }
+
+  .floor-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .floor-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 0;
+  }
+
+  .floor-list li:not(:last-child) {
+    border-bottom: 1px solid #fdf1f3;
+  }
+
+  .floor-name {
+    font-size: 0.95rem;
+  }
+
+  .floor-name .floor-shop {
+    font-weight: bold;
+    color: var(--text);
+  }
+
+  .floor-name .floor-level {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    margin-left: 6px;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.8rem;
+    padding: 20px;
+  }
+
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.6rem; }
+    nav.city-nav a { padding: 6px 16px; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐻 吉依卡哇店家地圖</h1>
+  <p>東京・京都・大阪　朝聖清單</p>
+</header>
+
+<nav class="city-nav">
+  <a href="#tokyo">東京</a>
+  <a href="#kyoto">京都</a>
+  <a href="#osaka">大阪</a>
+</nav>
+
+<main>
+
+  <section class="city-section" id="tokyo">
+    <h2>東京</h2>
+    <div class="card-grid">
+
+      <div class="building-card">
+        <div class="building-header">
+          <h3>渋谷 PARCO 店</h3>
+          <a class="btn-map" href="https://maps.app.goo.gl/B8ykEkEiDJPNA6Vc6" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+        <ul class="floor-list">
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇電影版合作 Cafe</span><span class="floor-level">6F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/p26/mck_cafe/shibuya/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇拉麵店</span><span class="floor-level">B1F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/chiikawa_ramenbuta/shibuya2/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="building-card">
+        <div class="building-header">
+          <h3>池袋 PARCO 店</h3>
+          <a class="btn-map" href="https://maps.app.goo.gl/zYfz37bzcnBsSMNx8" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+        <ul class="floor-list">
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇 LAND</span><span class="floor-level">本館 B2F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/ikebukuro/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇餐廳</span><span class="floor-level">本館 7F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/chiikawarestaurant/ikebukuro/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇拉麵店</span><span class="floor-level">本館 8F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/chiikawa_ramenbuta/ikebukuro/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="shop-card">
+        <h3>吉依卡哇 LAND TOKYO Station</h3>
+        <div class="location">八重洲北口 B1（東京キャラクターストリート）</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/tokyo/index.html" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/dLsBM1hMy1jpoQKv7" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+      <div class="shop-card">
+        <h3>吉依卡哇 LAND 東京晴空塔</h3>
+        <div class="location">Tokyo Solamachi 3F</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/solamachi/index.html" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/fmgJJ6DRBhfVnmFv7" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+      <div class="shop-card">
+        <h3>吉依卡哇 LAND 新宿</h3>
+        <div class="location">街邊店</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/shinjuku/index.html" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/Ttxu2P8cXJsGtbU17" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+      <div class="shop-card">
+        <h3>吉依卡哇 LAND 原宿</h3>
+        <div class="location">街邊店</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/harajuku/index.html" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/ASBHSRLRLxC6fCZi8" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+       <div class="shop-card">
+        <h3>吉依卡哇麵包店</h3>
+        <div class="location">Tokyu Plaza Omotesando「OMOKADO」百貨 3F</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawabakery.jp/" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/YSEoTGLukhcHj1MK8" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="city-section" id="kyoto">
+    <h2>京都</h2>
+    <div class="card-grid">
+
+      <div class="shop-card">
+        <h3>Mogumogu 本舖</h3>
+        <div class="location">京都伏見店（街邊店）</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://www.chiikawamogumogu.jp/stores/fushimi/" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/9FAbgePMYeVGftCPA" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+      <div class="shop-card">
+        <h3>吉依卡哇 LAND</h3>
+        <div class="location">京都四条河原町店（街邊店）</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/kyoto/index.html" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/fPCq5GZwLv92o3ms8" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="city-section" id="osaka">
+    <h2>大阪</h2>
+    <div class="card-grid">
+
+      <div class="building-card">
+        <div class="building-header">
+          <h3>心斎橋 PARCO 店</h3>
+          <a class="btn-map" href="https://maps.app.goo.gl/pg8J8XsMk4zbyMBAA" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+        <ul class="floor-list">
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇電影版合作 Cafe</span><span class="floor-level">6F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/p26/mck_cafe/shinsaibashi/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>          
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇 LAND</span><span class="floor-level">6F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/shinsaibashi/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+          <li>
+            <span class="floor-name"><span class="floor-shop">吉依卡哇拉麵店</span><span class="floor-level">B2F</span></span>
+            <a class="btn-site" href="https://chiikawa-info.jp/chiikawa_ramenbuta/shinsaibashi/index.html" target="_blank" rel="noopener">官方網站</a>
+          </li>
+
+        </ul>
+      </div>
+
+      <div class="shop-card">
+        <h3>吉依卡哇 LAND 大阪梅田店</h3>
+        <div class="location">阪急三番街 B1</div>
+        <div class="link-row">
+          <a class="btn-site" href="https://chiikawa-info.jp/chiikawaland/osaka/index.html" target="_blank" rel="noopener">官方網站</a>
+          <a class="btn-map" href="https://maps.app.goo.gl/M51mAkU9bFa4rr9t8" target="_blank" rel="noopener">Google 地圖</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  持續更新中，資訊以官方網站公告為準 🐻
+</footer>
+
+</body>
+</html>
